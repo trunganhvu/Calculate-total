@@ -7,18 +7,16 @@ class Calculate(modelsDjongo.Model):
     number1 = modelsDjongo.SmallIntegerField()
     number2 = modelsDjongo.SmallIntegerField()
     total = modelsDjongo.SmallIntegerField()
-    def get_absolute_url(self):
-        return reverse('student:detail', args=[self])
 
-class CalculateCreateForm(forms.ModelForm):
-    number1 = forms.IntegerField()
-    number2 = forms.IntegerField()
-    class Meta:
-        model = Calculate
-        fields = ('number1', 'number2')
+# class CalculateCreateForm(forms.ModelForm):
+#     number1 = forms.IntegerField()
+#     number2 = forms.IntegerField()
+#     class Meta:
+#         model = Calculate
+#         fields = ('number1', 'number2')
 
-class CalculateResult(forms.ModelForm):
-    total = forms.IntegerField()
-    class Meta:
-        model = Calculate
-        fields = ('total',)
+# class CalculateResult(forms.ModelForm):
+#     total = forms.IntegerField()
+#     class Meta:
+#         model = Calculate
+#         fields = ('total',)

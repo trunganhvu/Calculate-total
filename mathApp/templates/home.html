@@ -1,39 +1,63 @@
 <!DOCTYPE html>
 <html>
 <body>
-
-<h2>HTML Forms</h2>
+<!-- 
 {% for i in list %}
   <a>|{{ i.number1 }} + {{ i.number2 }} = {{ i.total }} |</a>
   
 {% endfor %}
+-->
 <div class="">
   <div id="form-wrapper">
   <form method="">
     <!-- {{ form.as_p }} {% csrf_token %} -->
+    {% csrf_token %}
     <label for="num1">num1:</label><br>
     <input type="text" id="num1" name="num1" ><br>
     <label for="num2">num2:</label><br>
     <input type="text" id="num2" name="num2" ><br><br>
     <input type="submit" value="Submit" >
   </form> 
-  <div id="a"></div>
+  <div id="result"></div>
   </div>
 </div>
 <script type="text/javascript">
-  let url_api = 'http://127.0.0.1:2001/api-twonumber/';
-  function x(){
-    let num1 = document.getElementById('num1').value;
-    let num2 = document.getElementById('num2').value;
-    url_api = url_api + num1 + '/'+num2+'/';
-  }
-    //let wrapper = document.getElementById('a');
+    let port = window.location.port;
+    let url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+    function concatNumberToUrl(){
+      let num1 = document.getElementById('num1').value;
+      let num2 = document.getElementById('num2').value;
+      url_api = url_api + num1 + '/' + num2 + '/';
+    }
     let form = document.getElementById('form-wrapper');
     form.addEventListener('submit', function(e){
       e.preventDefault();
-      x();
+      concatNumberToUrl();
       console.log(url_api);
-      fetch(url_api)
+      fetch(url_api, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json',
+					'X-CSRFToken': csrftoken,
+        },
+        
+      })
       .then(function(response) {
         if(!response.ok) {
            throw new Error("HTTP error, status = " + response.status);
@@ -42,16 +66,13 @@
         return myjson_data;
       })
       .then(function(myjson){
-        let p = '<p>'+myjson.total+'</p>';
-        //response.json().then(data =>{
-          //let p = '<p>'+data.total+'</p>';
-          document.getElementById('a').innerHTML = p;
-          url_api = 'http://127.0.0.1:2001/api-twonumber/';
-        //})
+        let result = '<p>' + myjson.total + '</p>';
+        document.getElementById('result').innerHTML = result;
+        url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
       })
       .catch(function(error) {
-        console.log('Erro///////////////');
-        url_api = 'http://127.0.0.1:2001/api-twonumber/';
+        document.getElementById('result').innerHTML = "Đã có lỗi xảy ra!!";
+        url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
       })
     });
   

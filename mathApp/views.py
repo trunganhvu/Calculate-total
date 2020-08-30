@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from .models import Calculate, CalculateCreateForm, CalculateResult
+from .models import Calculate#, CalculateCreateForm, CalculateResult
 from .serializers import CalculateSerializer
 
 from rest_framework.decorators import api_view
@@ -17,7 +17,6 @@ def getList(request):
 def getTotal(request, pk):
     calculate = Calculate.objects.get(id=pk)
     calculate.total = calculate.number1 + calculate.number2
-    print('calculate.total',calculate.total)
     serializer1 = {
         'number1': calculate.number1,
         'number2': calculate.number2,
@@ -31,7 +30,7 @@ def getTotal(request, pk):
 
 
 @api_view(['GET'])
-def postTwoNumber(request, num1, num2):
+def addTwoNumber(request, num1, num2):
     data = {
         'number1': num1,
         'number2': num2,
@@ -42,22 +41,29 @@ def postTwoNumber(request, num1, num2):
         serializer.save()
     return Response(serializer.data)
 
-class home_view(TemplateView):
-    def get(self, request, *args, **kwargs):
-        context = {
-            'form': CalculateCreateForm(),
-            'list': Calculate.objects.all(),
-        }
-        return render(request, 'home.html', context)
+def home_page(request):
+    listCalculates = Calculate.objects.all()
+    context = {
+        'list': listCalculates,
+    }
+    return render(request, 'home.html', context)
 
-    def post(self, request, *args, **kwargs):
-        form = CalculateCreateForm(request.POST)
-        if form.is_valid:
-            calculate = form.save()
-            print(calculate.number1)
-            return self.get(request, *args, **kwargs)
-        content = {
-            'form': form,
-            'list': Calculate.objects.all()
-        }
-        return render(request, 'home.html', content)
+# class home_view(TemplateView):
+#     def get(self, request, *args, **kwargs):
+#         context = {
+#             'form': CalculateCreateForm(),
+#             'list': Calculate.objects.all(),
+#         }
+#         return render(request, 'home.html', context)
+
+#     def post(self, request, *args, **kwargs):
+#         form = CalculateCreateForm(request.POST)
+#         if form.is_valid:
+#             calculate = form.save()
+#             print(calculate.number1)
+#             return self.get(request, *args, **kwargs)
+#         content = {
+#             'form': form,
+#             'list': Calculate.objects.all()
+#         }
+#         return render(request, 'home.html', content)
