@@ -23,7 +23,10 @@
 </div>
 <script type="text/javascript">
     let port = window.location.port;
-    let url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
+    let hostname = window.location.hostname;
+    console.log(hostname);
+    let url_api = 'http://'+hostname + '/api-twonumber/';
+    // let url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -68,11 +71,11 @@
       .then(function(myjson){
         let result = '<p>' + myjson.total + '</p>';
         document.getElementById('result').innerHTML = result;
-        url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
+        url_api ='http://'+ hostname + '/api-twonumber/';
       })
       .catch(function(error) {
         document.getElementById('result').innerHTML = "Đã có lỗi xảy ra!!";
-        url_api = 'http://127.0.0.1:' + port + '/api-twonumber/';
+        url_api ='http://'+ hostname + '/api-twonumber/';
       })
     });
   
